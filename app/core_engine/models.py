@@ -4,6 +4,7 @@ class Personaje:
         self.nombre = nombre
         self._salud = salud_maxima
         self.salud_maxima = salud_maxima
+        self.inventario = ["Poción chica", "Pan seco"]
 
     @property
     def salud(self):
