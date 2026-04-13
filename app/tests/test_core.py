@@ -4,8 +4,8 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from core_engine.models import Guerrero, Mago, JefeFinal, Gremio
-from core_engine.database import inicializar_db, obtener_conexion
+from app.core_engine.models import Guerrero, Mago, JefeFinal, Gremio
+from app.core_engine.database import inicializar_db, obtener_conexion
 
 @pytest.fixture()
 def db_limpia():

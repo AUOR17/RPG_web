@@ -1,3 +1,5 @@
+import psycopg2 # Cambiamos sqlite3 por psycopg2 para los errores
+import sys
 from core_engine.database import inicializar_db, obtener_conexion
 from core_engine.models import Guerrero, Mago, Gremio
 
@@ -7,13 +9,16 @@ def fundar_gremio():
     cursor = conexion.cursor()
 
     try: 
-        cursor.execute("INSERT INTO gremios (nombre_gremio) VALUES (?)", (nombre,))
+        cursor.execute("INSERT INTO gremios (nombre_gremio) VALUES (%s)", (nombre,))
         conexion.commit()
         print(f"Gremio '{nombre}' ha sido fundado " )
 
+    except psycopg2.IntegrityError:
+        print(f"¡Alto ahí! Ya existe un Gremio registrado con el nombre '{nombre}'.")
     except Exception as e:
         print(f"El error es {e}")
     finally: 
+        cursor.close()
         conexion.close()
 
 def reclutar_aventurero():
@@ -35,7 +40,7 @@ def reclutar_aventurero():
             nuevo_pj = Guerrero(nombre, salud_maxima=100, puntos_armadura=armadura)
             cursor.execute('''
                 INSERT INTO personajes (nombre, salud_maxima, tipo_clase, puntos_armadura, gremio_id)
-                VALUES (?, ?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s, %s)
             ''', (nuevo_pj.nombre, nuevo_pj.salud_maxima, 'Guerrero', nuevo_pj.puntos_armadura, gremio_id))
 
         elif clase == '2':
@@ -43,7 +48,7 @@ def reclutar_aventurero():
             nuevo_pj = Mago(nombre, salud_maxima=100, mana_maximo=mana)
             cursor.execute('''
                 INSERT INTO personajes (nombre, salud_maxima, tipo_clase, puntos_armadura, gremio_id)
-                VALUES (?, ?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s, %s)
             ''', (nuevo_pj.nombre, nuevo_pj.salud_maxima, 'Mago', nuevo_pj.mana_maximo, gremio_id))
 
         else:
@@ -52,6 +57,9 @@ def reclutar_aventurero():
         
         conexion.commit()
         print(f"Aventurero '{nuevo_pj.nombre} ha sido recludado a la base de datos")
+
+    except psycopg2.IntegrityError:
+        print(f"¡Clon detectado! Ya existe un héroe llamado '{nombre}' en este mundo.")
 
     except Exception as e:
         print(f"El error es {e}")
@@ -89,7 +97,7 @@ def ver_taberna():
             SELECT p.nombre, p.salud_maxima, p.tipo_clase, p.puntos_armadura, p.mana_maximo, g.nombre_gremio
             FROM personajes p
             JOIN gremios g ON p.gremio_id = g.id
-            WHERE g.id = ?
+            WHERE g.id = %s
         ''', (gremio_id,))
         resultados = cursor.fetchall()
         
