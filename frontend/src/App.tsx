@@ -13,7 +13,7 @@ const ProtectedRoute = ({children}: {children: JSX.Element}) => {
     return <Navigate to="/login" replace/>;
   }
   return children
-}
+};
 
 function App(){
   return(
@@ -22,7 +22,7 @@ function App(){
         <Route path="/login" element={<Login />} />
         <Route
           path="/dashboard"
-          elements={
+          element={
             <ProtectedRoute>
               <TableroProvisional />
             </ProtectedRoute>
