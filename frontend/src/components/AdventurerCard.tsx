@@ -1,5 +1,6 @@
 import api from '../api';
 import type { Adventurer } from '../types';
+import Button from './Button';
 
 interface AdventurerCardProps {
     adv: Adventurer;
@@ -34,36 +35,32 @@ export default function AdventurerCard({ adv, guildName, onActionSuccess }: Adve
     };
 
     return (
-        <div style={{ backgroundColor: '#1F2937', padding: '1.5rem', borderRadius: '0.5rem', border: '1px solid #374151', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{adv.name}</h2>
-                <span style={{ backgroundColor: '#1E40AF', color: '#DBEAFE', fontSize: '0.75rem', padding: '0.25rem 0.5rem', borderRadius: '9999px', fontWeight: 'bold' }}>
-                Nv. {adv.level}
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-md flex flex-col hover:border-gray-500 transition-colors">
+            <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold text-white">{adv.name}</h2>
+                <span className="bg-blue-900 text-blue-200 text-xs px-2 py-1 rounded-full font-bold">
+                    Nv. {adv.level}
                 </span>
             </div>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#D1D5DB', marginBottom: '1.5rem', flexGrow: 1 }}>
+            <div className="flex flex-col gap-2 text-sm text-gray-300 mb-6 flex-grow">
                 <p> 🧙‍♂️ <strong>Clase: </strong> {adv.class_type} </p>
                 <p> 🔰 <strong>Estado: </strong> {adv.status}</p>
-                <p> 🏰 <strong>Gremio: </strong> <span style={{color: '#60A5FA' }}>{guildName}</span> </p>
+                <p> 🏰 <strong>Gremio: </strong> <span className="text-blue-400">{guildName}</span> </p>
             </div>
 
-            <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <button
-                    onClick={subirNivel}
-                    style={{width: '100%', backgroundColor: '#10B981', color: 'white', padding: '0.5rem', borderRadius: '0.25rem', border: 'none', fontSize: '0.875rem', cursor: 'pointer', fontWeight: 'bold' }}
-                >
+            <div className="flex flex-col gap-2">
+                <Button onClick={subirNivel} variant="success">
                     Subir de Nivel
-                </button>
+                </Button>
 
-                <button
-                    onClick={matarAventurero}
-                    style={{width: '100%', backgroundColor: 'transparent', color: '#9CA3AF', padding: '0.5rem', borderRadius: '0.25rem', border: '1px solid #374151', fontSize: '0.875rem', cursor: 'pointer'}}
-                    onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#7F1D1D'; e.currentTarget.style.color = '#FECACA'; }}
-                    onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#9CA3AF'; }}
-                >
-                    Dar de baja
-                </button>
+                <Button 
+                    onClick={matarAventurero} 
+                    variant="outline"
+                    className="hover:bg-red-900 hover:border-red-700 hover:text-red-200"
+                    >
+                        Dar de Baja ⚔️
+                </Button>
 
             </div>
 

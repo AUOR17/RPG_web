@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import api from '../api';
+import Button from './Button';
 
 interface AddGuildProps {
     onSuccess: () => void;
@@ -32,28 +33,28 @@ export default function AddGuild({ onSuccess }: AddGuildProps) {
     };
 
     return (
-        <div style={{ backgroundColor: '#1F2937', padding: '1.5rem', borderRadius: '0.5rem', border: '1px solid #374151' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#FBBF24' }}>🏰 Fundar Gremio</h2>
-            <form onSubmit={crearGremio} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-md">
+            <h2 className="text-xl font-bold mb-4 text-yellow-500">🏰 Fundar Gremio</h2>
+            <form onSubmit={crearGremio} className="flex flex-col gap-4">
                 <div>
-                    <label style={{ fontSize: '0.875rem', color: '#9CA3AF' }}>Nombre del Gremio</label>
-                    <input type="text" value={newGuildName} onChange={(e) => setNewGuildName(e.target.value)} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#374151', color: 'white', border: '1px solid #4B5563', borderRadius: '0.25rem' }} />
+                    <label className="block text-sm text-gray-400 mb-1">>Nombre del Gremio</label>
+                    <input type="text" value={newGuildName} onChange={(e) => setNewGuildName(e.target.value)} required className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:border-yellow-500" />
                 </div>
 
                 <div>
-                    <label style={{ fontSize: '0.875rem', color: '#9CA3AF' }}>Reino / Ubicacion</label>
-                    <input type="text" value={newGuildKingdom} onChange={(e) => setNewGuildKingdom(e.target.value)} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#374151', color: 'white', border: '1px solid #4B5563', borderRadius: '0.25rem' }} />
+                    <label className="block text-sm text-gray-400 mb-1">>Reino / Ubicacion</label>
+                    <input type="text" value={newGuildKingdom} onChange={(e) => setNewGuildKingdom(e.target.value)} required className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:border-yellow-500" />
                 </div>
 
                 <div>
-                    <label style={{ fontSize: '0.875rem', color: '#9CA3AF' }}>Capacidad Maxima</label>
-                    <input type="text" value={newGuildCapacity} onChange={(e) => setNewGuildCapacity(Number(e.target.value))} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#374151', color: 'white', border: '1px solid #4B5563', borderRadius: '0.25rem' }} />
+                    <label className="block text-sm text-gray-400 mb-1">>Capacidad Maxima</label>
+                    <input type="text" value={newGuildCapacity} onChange={(e) => setNewGuildCapacity(Number(e.target.value))} required className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:border-yellow-500" />
                 </div>
 
 
-                <button type="submit" style={{ backgroundColor: '#D97706', color: 'white', padding: '0.5rem', borderRadius: '0.25rem', border: 'none', fontWeight: 'bold', cursor: 'pointer', marginTop: '0.5rem' }}>
+                <Button type="submit" variant="warning" className="mt-2">
                     Construir Sede 🧱
-                </button>
+                </Button>
 
             </form>
         </div>

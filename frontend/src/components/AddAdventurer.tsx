@@ -1,6 +1,7 @@
 import { useState } from "react";
 import api from '../api'
 import type { Guild } from "../types";
+import Button from './Button';
 
 interface AddAdventurerProps{
     guilds: Guild[];
@@ -38,17 +39,19 @@ export default function AddAdventurer({ guilds, onSuccess }: AddAdventurerProps)
     };
 
     return (
-        <div style={{ backgroundColor: '#1F2937', padding: '1.5rem', borderRadius: '0.5rem', border: '1px solid #374151' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#60A5FA' }}>✨ Reclutar Novato</h2>
-            <form onSubmit={crearAventurero} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-md">
+            <h2 className="text-xl font-bold mb-4 text-blue-400">✨ Reclutar Novato</h2>
+            <form onSubmit={crearAventurero} noValidate className="flex flex-col gap4">
                 <div>
-                    <label style={{ fontSize: '0.875rem', color: '#9CA3AF' }}>Nombre</label>
-                    <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#374151', color: 'white', border: '1px solid #4B5563', borderRadius: '0.25rem' }} />
+                    <label className="block test-sm text-gray-400 mb-1">Nombre</label>
+                    <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} required 
+                        className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus_border-blue-500" />
                 </div>
 
                 <div>
-                    <label style={{ fontSize: '0.875rem', color: '#9CA3AF' }}>Clase</label>
-                    <select value={newClass} onChange={(e) => setNewClass(e.target.value as any)} style={{width: '100%', padding: '0.5rem', backgroundColor: '#374151', color: 'white', border: '1px solid #4B5563', borderRadius: '0.25rem' }}>
+                    <label className="block test-sm text-gray-400 mb-1">Clase</label>
+                    <select value={newClass} onChange={(e) => setNewClass(e.target.value as any)} 
+                        className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus_border-blue-500">
                         <option value="WARRIOR">Guerrero</option>
                         <option value="MAGE">Mago</option>
                         <option value="ROGUE">Pícaro</option>
@@ -57,8 +60,9 @@ export default function AddAdventurer({ guilds, onSuccess }: AddAdventurerProps)
                 </div>
 
                 <div>
-                    <label style={{ fontSize: '0.875rem', color: '#9CA3AF' }}>Gremio</label>
-                    <select value={newGuild} onChange={(e) => setNewGuild(Number(e.target.value))} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#374151', color: 'white', border: '1px solid #4B5563', borderRadius: '0.25rem' }}>
+                    <label className="block test-sm text-gray-400 mb-1">Gremio</label>
+                    <select value={newGuild} onChange={(e) => setNewGuild(Number(e.target.value))} required 
+                    className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus_border-blue-500">
                         <option value="" disabled>-- Elige un Gremio --</option>
                         {guilds.map(guild => (
                             <option key={guild.id} value={guild.id}>{guild.name}</option>
@@ -66,9 +70,9 @@ export default function AddAdventurer({ guilds, onSuccess }: AddAdventurerProps)
                     </select>
                 </div>
 
-                <button type="submit" style={{ backgroundColor: '#10B981', color: 'white', padding: '0.5rem', borderRadius: '0.25rem', border: 'none', fontWeight: 'bold', cursor: 'pointer', marginTop: '0.5rem' }}>
+                <Button type="submit" variant="success" className="mt-2" >
                     Forjar Aventurero ⚒️
-                </button>
+                </Button>
 
             </form>
         </div>
