@@ -37,17 +37,17 @@ export default function AddGuild({ onSuccess }: AddGuildProps) {
             <h2 className="text-xl font-bold mb-4 text-yellow-500">🏰 Fundar Gremio</h2>
             <form onSubmit={crearGremio} className="flex flex-col gap-4">
                 <div>
-                    <label className="block text-sm text-gray-400 mb-1">>Nombre del Gremio</label>
+                    <label className="block text-sm text-gray-400 mb-1">Nombre del Gremio</label>
                     <input type="text" value={newGuildName} onChange={(e) => setNewGuildName(e.target.value)} required className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:border-yellow-500" />
                 </div>
 
                 <div>
-                    <label className="block text-sm text-gray-400 mb-1">>Reino / Ubicacion</label>
+                    <label className="block text-sm text-gray-400 mb-1">Reino / Ubicacion</label>
                     <input type="text" value={newGuildKingdom} onChange={(e) => setNewGuildKingdom(e.target.value)} required className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:border-yellow-500" />
                 </div>
 
                 <div>
-                    <label className="block text-sm text-gray-400 mb-1">>Capacidad Maxima</label>
+                    <label className="block text-sm text-gray-400 mb-1">Capacidad Maxima</label>
                     <input type="text" value={newGuildCapacity} onChange={(e) => setNewGuildCapacity(Number(e.target.value))} required className="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:border-yellow-500" />
                 </div>
 
