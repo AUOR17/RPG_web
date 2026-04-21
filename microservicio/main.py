@@ -60,14 +60,14 @@ def verificar_jwt(credentials: HTTPAuthorizationCredentials = Depends(security))
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token invalido")
     
-@app.patch("/api/kanban/move/{aventurero_id}")
+@app.patch("/api/kanban/mover/{aventurero_id}")
 async def mover_aventurero(
     aventurero_id: int,
     movimiento: MovimientoKanban, 
     db: AsyncSession=Depends(get_db),
     usuario_valido: dict = Depends(verificar_jwt)
 ):
-    estados_permitidos = ["Disponible", "En Mision", "Enfermeria", "Muerto"]
+    estados_permitidos = ["Disponible", "En Misión", "Enfermería", "Muerto"]
 
     if movimiento.nuevo_estado not in estados_permitidos:
         raise HTTPException(status_code=400, detail="Estado no permitido en el gremio")
@@ -78,7 +78,7 @@ async def mover_aventurero(
         .values(estado = movimiento.nuevo_estado)
     )
     result = await db.execute(query)
-    await db.commit
+    await db.commit()
 
     if result.rowcount == 0:
         raise HTTPException(status_code=404, detail="Aventurero no econtrado")

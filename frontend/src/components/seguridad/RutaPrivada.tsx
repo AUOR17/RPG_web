@@ -1,36 +1,37 @@
-import {Navigate, Outlet, useNavigate} from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom';
 
-export default function RutaPrivada (){
+export default function RutaPrivada() {
+  const token = localStorage.getItem('token');
 
-    const token = localStorage.getItem('token');
-    const navigate = useNavigate();
+  // 1. Si no hay token de plano, lo mandamos a volar instantáneamente
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
 
-    if (!token){
-        return <Navigate to="/login" replace/>;
+  // 2. Si SÍ hay token, leemos su fecha de caducidad ANTES de dejarlo pasar
+  try {
+    // El JWT tiene 3 partes separadas por puntos. La del medio [1] tiene los datos.
+    const payloadCodificado = token.split('.')[1];
+    
+    // Decodificamos de Base64 a un objeto de JavaScript
+    const payload = JSON.parse(atob(payloadCodificado));
+    
+    // JWT guarda la fecha en segundos, JavaScript la usa en milisegundos
+    const fechaExpiracion = payload.exp * 1000; 
+    const tiempoActual = Date.now();
+
+    // Si la fecha de hoy ya pasó la fecha de expiración del token...
+    if (tiempoActual >= fechaExpiracion) {
+      console.warn("El cadenero detectó un token vencido. Acceso denegado.");
+      localStorage.removeItem('token'); // Destruimos la evidencia
+      return <Navigate to="/login" replace />; // Redirección silenciosa y sin parpadeos
     }
+  } catch (error) {
+    // Si alguien intentó hackear el token y puso texto sin sentido
+    localStorage.removeItem('token');
+    return <Navigate to="/login" replace />;
+  }
 
-    const cerrarSesion = () => {
-        localStorage.removeItem('token');
-        navigate('/login');
-    };
-
-    return (
-        <div className="min-h-screen bg-gray-900 text-white font-sans">
-            <header className="bg-gray-800 border-b border-gray-700 p-4 shadow-md mb-8">
-                <div className="max-w-7xl mx-auto flex justify-between items-center">
-                    <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">
-                        Gremio ERP (SAP)
-                    </h1>
-                    <button
-                        onClick = {cerrarSesion}
-                        className="text-sm text-gray-300 hover:text-white border border-gray-600 hover:border-red-500 hover:bg-red-900/30 py-1 px-4 rounded transition-all"
-                        >
-                        Cerrar Sesion
-                    </button>
-                </div>
-            </header>
-
-        </div>
-    );
-
+  // 3. Si tiene token, es válido y está vigente, bienvenido al Gremio.
+  return <Outlet />;
 }

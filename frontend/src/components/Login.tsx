@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import {useNavigate} from 'react-router-dom'
+import apiDjango from '../api/apiDjango';
 
 export default function Login(){
     const [username, setUsername] = useState('');
@@ -7,7 +8,7 @@ export default function Login(){
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const manejarlogin = async (e: React.FormEvent) => {
+    const manejarLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
 

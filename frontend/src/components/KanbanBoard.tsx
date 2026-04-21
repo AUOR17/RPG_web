@@ -5,6 +5,7 @@ import apiDjango from '../api/apiDjango';
 import type { Aventurero, Columnas, Gremio } from '../types';
 import ReclutarAventureroModal from './ReclutarAventureroModal';
 import CrearGremioModal from './CrearGremioModal';
+import BotonCerrarSesion from './BotonCerrarSesion';
 
 
 const columnasVacias: Columnas = {
@@ -21,11 +22,16 @@ export default function KanbanBoard(){
     const [gremios, setGremios] = useState<Gremio[]>([]);
     const [modalGremioAbierto, setModalGremioAbierto] = useState(false);
 
-    const alReclutarExitoso = (nuevo: Aventurero) => {
-        setColumnas((prev) => ({
-            ...prev,
-            "Disponible": {...prev["Disponible"], nuevo}
-        }));
+    const alReclutarExitoso = (nuevoAventurero: Aventurero) => {
+      setColumnas((prev) => {
+        // Extraemos la columna actual de manera segura
+        const columnaDisponible = Array.isArray(prev["Disponible"]) ? prev["Disponible"] : [];
+        
+        return {
+          ...prev,
+          "Disponible": [...columnaDisponible, nuevoAventurero]
+        };
+      });
     };
 
     const alFundarGremioExitoso = (nuevoGremio : Gremio) => {
@@ -37,13 +43,20 @@ export default function KanbanBoard(){
             try {
                 const [resAventureros, resGremios] = await Promise.all([
                     apiDjango.get('/api/aventureros/'),
-                    apiDjango.get('/api(gremios/')
+                    apiDjango.get('/api/gremios/')
                 ]);
 
-                const aventurerosReales: Aventurero[] = resAventureros.data;
-                setGremios(resGremios.data);
+                const aventurerosReales: Aventurero[] = Array.isArray(resAventureros.data) 
+                  ? resAventureros.data 
+                  : (resAventureros.data.results || []);
 
-                const tableroCargado: Columnas = structuredClone(columnasVacias)
+                const gremiosReales: Gremio[] = Array.isArray(resGremios.data)
+                  ? resGremios.data
+                  : (resGremios.data.results || []);
+
+                setGremios(gremiosReales);
+
+                const tableroCargado: Columnas = structuredClone(columnasVacias);
 
                 aventurerosReales.forEach((ave) => {
                     if (tableroCargado[ave.estado]){
@@ -71,57 +84,78 @@ export default function KanbanBoard(){
 
         if (!destination) return;
 
-        if (source.droppableID === destination.droppableID && source.index === destination.index) return;
+        if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
-        const estadoAnterior = {...columnas} ;
-        const columnaOrigen = [...columnas[source.droppableID]];
-        const columnaDestino = [...columnas[destination.droppableID]];
+        const estadoAnterior = { ...columnas };
+
+        if (source.droppableId === destination.droppableId) {
+          const columnaActualizada = [...columnas[source.droppableId]];
+          const [aventureroMovido] = columnaActualizada.splice(source.index, 1);
+          columnaActualizada.splice(destination.index, 0, aventureroMovido);
+
+          setColumnas({
+            ...columnas,
+            [source.droppableId]: columnaActualizada
+          });
+          // No llamamos a FastAPI porque el estado RPG no ha cambiado, solo el orden visual.
+          return; 
+        }
+
+        const columnaOrigen = [...columnas[source.droppableId]];
+        const columnaDestino = [...columnas[destination.droppableId]];
         const [aventureroMovido] = columnaOrigen.splice(source.index,1);
         columnaDestino.splice(destination.index, 0, aventureroMovido)
 
 
         setColumnas({
             ...columnas, 
-            [source.droppableID]: columnaOrigen,
-            [destination.droppableID]: columnaDestino
+            [source.droppableId]: columnaOrigen,
+            [destination.droppableId]: columnaDestino
         });
 
         try{
-            console.log(`Intentando mover a ${aventureroMovido.nombre} a ${destination.droppableID}...`);
-            const respuesta = await apiFast.patch(`/api/kanban/mover${aventureroMovido.id}`,{
-                nuevo_estado: destination.droppableID
+            console.log(`Intentando mover a ${aventureroMovido.nombre} a ${destination.droppableId}...`);
+            const respuesta = await apiFast.patch(`/api/kanban/mover/${aventureroMovido.id}`,{
+                nuevo_estado: destination.droppableId
             });
             console.log("Exito en el Backend", respuesta.data);
         } catch (error) {
             console.error("El backend rechazó el movimeinto:", error);
+            setColumnas(estadoAnterior);
             alert(`El movimiento de ${aventureroMovido.nombre} fue denegado`);
         }
 
     };
 return (
-    <>
-      {/* BARRA DE HERRAMIENTAS SUPERIOR TIPO SAP */}
-      <div className="flex justify-between items-center mb-6">
+    <div className="min-h-screen bg-gray-900 text-white p-8">
+      
+      <div className="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
         <h2 className="text-xl text-gray-400 font-mono tracking-widest uppercase text-sm">
           Operaciones de Campo
         </h2>
-        <div className="flex gap-4">
+        
+        <div className="flex gap-4 items-center">
           <button 
             onClick={() => setModalGremioAbierto(true)}
             className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded shadow-lg transition-all"
           >
             + Fundar Gremio
           </button>
+          
           <button 
             onClick={() => setModalAbierto(true)}
             className="bg-amber-600 hover:bg-amber-500 text-white font-bold py-2 px-6 rounded shadow-lg transition-all"
           >
             + Reclutar Aventurero
           </button>
+
+          <div className="w-px h-8 bg-gray-600 mx-2"></div>
+
+          {/* ✅ Nuestro componente inyectado limpiamente */}
+          <BotonCerrarSesion /> 
         </div>
       </div>
 
-      {/* EL TABLERO KANBAN */}
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex gap-4 justify-center items-start mt-8">
           {Object.entries(columnas).map(([nombreColumna, aventureros]) => (
@@ -136,8 +170,13 @@ return (
                     {nombreColumna}
                   </h2>
                   <div className="flex flex-col gap-3">
-                    {aventureros.map((ave, index) => (
-                      <Draggable key={ave.id.toString()} draggableId={ave.id.toString()} index={index}>
+                    
+                    {Array.isArray(aventureros) && aventureros.map((ave, index) => (
+                      <Draggable 
+                        key={ave.id?.toString() || `nuevo-${index}`} 
+                        draggableId={ave.id?.toString() || `nuevo-${index}`} 
+                        index={index}
+                      >
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
@@ -164,7 +203,6 @@ return (
         </div>
       </DragDropContext>
 
-      {/* MODALES FLOTANTES */}
       <ReclutarAventureroModal 
         isOpen={modalAbierto} 
         onClose={() => setModalAbierto(false)} 
@@ -177,6 +215,6 @@ return (
         onClose={() => setModalGremioAbierto(false)} 
         onSuccess={alFundarGremioExitoso}
       />
-    </>
+    </div>
   );
 }

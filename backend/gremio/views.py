@@ -5,9 +5,9 @@ from .serializers import GremioSerializaer, AventureroSerializaer
 # Create your views here.
 
 class GremioViewSet(viewsets.ModelViewSet):
-    queryset = Gremio.objetcs.all()
+    queryset = Gremio.objects.all()
     serializer_class = GremioSerializaer
 
 class AventureroViewSet(viewsets.ModelViewSet):
-    queryset = Aventurero.objects-all()
+    queryset = Aventurero.objects.all()
     serializer_class = AventureroSerializaer

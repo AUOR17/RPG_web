@@ -4,7 +4,7 @@ from .views import GremioViewSet, AventureroViewSet
 
 router = DefaultRouter()
 router.register(r'gremios', GremioViewSet)
-router.register(r'aventurero', AventureroViewSet)
+router.register(r'aventureros', AventureroViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
