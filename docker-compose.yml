@@ -1,0 +1,58 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: rpg_db_test
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - rpg_network
+
+  backend_core_test:
+    build: ./backend_core
+    container_name: rpg_django_test
+    volumes:
+      - ./backend_core:/app
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=db
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    networks:
+      - rpg_network
+
+  backend_micro_test:
+    build: ./backend_micro
+    container_name: rpg_fastapi_castlevannia_test
+    volumes:
+      - ./backend_micro:/app
+    ports:
+      - "8001:8001"
+    networks:
+      - rpg_network
+
+  frontend_spa_test:
+    build: ./frontend_spa
+    container_name: rpg_react_test
+    volumes:
+      - ./frontend_spa:/app
+      - /app/node_modules 
+    ports:
+      - "5173:5173"
+    stdin_open: true
+    tty: true
+    networks:
+      - rpg_network
+
+networks:
+  rpg_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
