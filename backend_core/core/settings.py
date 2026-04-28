@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'core',
-    # 'quests',
+    'quests',
 ]
 
 AUTH_USER_MODEL = 'core.User'
