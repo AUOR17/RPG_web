@@ -3,6 +3,7 @@ from django.db import models
 
 class User(AbstractUser):
     class Role(models.TextChoices):
+        MAESTRO = 'MAESTRO', 'Maestro del Gremio (Admin)'
         GUERRERO = 'GUERRERO', 'Guerrero (Ventas)'
         MAGO = 'MAGO', 'Mago (Marketing)'
         PICARO = 'PICARO', 'Pícaro (Operaciones)'

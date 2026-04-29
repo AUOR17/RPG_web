@@ -16,11 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from core.views import (
+    CookieTokenObtainPairView,
+    CookieTokenRefreshView,
+    RegisterView,
+    BovedaSecretaView
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/quests/', include('quests.urls')), 
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/register/', RegisterView.as_view(), name='auth_register'),
+    path('api/boveda/',BovedaSecretaView.as_view(), name='boveda_secreta'),
+    path('api/token/', CookieTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', CookieTokenRefreshView.as_view(), name='token_refresh'),
 ]
